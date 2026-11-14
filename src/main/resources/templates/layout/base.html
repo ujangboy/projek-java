@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, content)">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Sistem Informasi Penjualan">
+	<link rel="icon" href="data:,">
+	<title th:text="${title} + ' - Sistem Penjualan'">Sistem Penjualan</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.css}">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+	<a class="visually-hidden-focusable" href="#appContent">Lewati ke konten</a>
+	<div class="app-shell">
+		<aside th:replace="~{layout/fragments :: sidebar}"></aside>
+		<div class="app-main">
+			<header th:replace="~{layout/fragments :: topbar}"></header>
+			<main id="appContent" class="app-content">
+				<div th:insert="${content}"></div>
+			</main>
+		</div>
+	</div>
+	<script th:src="@{/webjars/bootstrap/5.3.7/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

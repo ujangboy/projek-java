@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: page('Dashboard', ~{::section})}">
+<body>
+	<section>
+		<div class="page-heading">
+			<div>
+				<span class="eyebrow">Phase 0</span>
+				<h1>Dashboard</h1>
+				<p>Selamat datang, <strong th:text="${currentUser}">admin</strong>. Fondasi aplikasi sudah berjalan.</p>
+			</div>
+		</div>
+
+		<div class="row g-3">
+			<div class="col-12 col-xl-8">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<h2 class="h5 mb-3">Status fondasi</h2>
+						<ul class="checklist">
+							<li><i class="bi bi-check-circle-fill"></i> Spring Boot, Thymeleaf, dan Bootstrap aktif</li>
+							<li><i class="bi bi-check-circle-fill"></i> MySQL Laragon terhubung dan Flyway berjalan</li>
+							<li><i class="bi bi-check-circle-fill"></i> Login admin memakai BCrypt</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-xl-4">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<h2 class="h5 mb-2">Berikutnya</h2>
+						<p class="text-muted mb-0">Phase 1 menambahkan tabel pelanggan, barang, transaksi, detail
+							transaksi, dan identitas instansi.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

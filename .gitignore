@@ -1,0 +1,14 @@
+target/
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+uploads/
+.playwright-mcp/
+application-local.properties
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

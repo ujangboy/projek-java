@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Masuk ke Sistem Informasi Penjualan">
+	<link rel="icon" href="data:,">
+	<title>Masuk - Sistem Penjualan</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.7/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.css}">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="login-page">
+	<main class="login-card">
+		<div class="login-brand"><i class="bi bi-shop"></i></div>
+		<h1>Sistem Penjualan</h1>
+		<p class="text-muted mb-4">Masuk untuk mengelola data penjualan.</p>
+
+		<div th:if="${param.error}" class="alert alert-danger py-2" role="alert">
+			<i class="bi bi-exclamation-circle me-1"></i>Username atau password salah.
+		</div>
+		<div th:if="${param.logout}" class="alert alert-success py-2" role="alert">
+			<i class="bi bi-check-circle me-1"></i>Anda telah keluar.
+		</div>
+
+		<form th:action="@{/login}" method="post">
+			<div class="mb-3">
+				<label for="username" class="form-label fw-semibold">Username</label>
+				<input type="text" id="username" name="username" class="form-control"
+					autocomplete="username" required autofocus>
+			</div>
+			<div class="mb-4">
+				<label for="password" class="form-label fw-semibold">Password</label>
+				<input type="password" id="password" name="password" class="form-control"
+					autocomplete="current-password" required>
+			</div>
+			<button type="submit" class="btn btn-primary w-100">
+				<i class="bi bi-box-arrow-in-right me-1"></i>Masuk
+			</button>
+		</form>
+
+		<p class="text-center text-muted small mt-4 mb-0">Sistem Informasi Penjualan</p>
+	</main>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: page('Data Transaksi', ~{::section})}">
+<body>
+	<section>
+		<div class="page-heading">
+			<div>
+				<span class="eyebrow">Operasional</span>
+				<h1>Data Transaksi</h1>
+				<p th:text="${page.totalElements} + ' transaksi tercatat'">0 transaksi tercatat</p>
+			</div>
+			<a class="btn btn-primary" th:href="@{/transaksi/new}">
+				<i class="bi bi-plus-lg me-1"></i>Transaksi Baru
+			</a>
+		</div>
+
+		<div class="card app-card">
+			<div class="card-body">
+				<div class="table-responsive">
+					<table class="table table-hover align-middle mb-0">
+						<thead>
+							<tr>
+								<th>Nomor</th>
+								<th>Tanggal</th>
+								<th>Pelanggan</th>
+								<th>Kasir</th>
+								<th class="text-end">Total</th>
+								<th class="text-end">Aksi</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="t : ${page.content}">
+								<td class="fw-semibold" th:text="${t.nomorTransaksi}">TRX-20261114-0001</td>
+								<td th:text="${#temporals.format(t.tanggal, 'dd-MM-yyyy HH:mm')}">14-11-2026 10:00</td>
+								<td th:text="${t.pelanggan.nama}">Budi Santoso</td>
+								<td th:text="${t.user.nama}">Administrator</td>
+								<td class="text-end"
+									th:text="${'Rp ' + #numbers.formatDecimal(t.total, 1, 'POINT', 2, 'COMMA')}">
+									Rp 0,00
+								</td>
+								<td class="text-end">
+									<a class="btn btn-sm btn-outline-secondary"
+										th:href="@{/transaksi/{id}(id=${t.idTransaksi})}">
+										<i class="bi bi-eye"></i> Lihat
+									</a>
+								</td>
+							</tr>
+							<tr th:if="${page.empty}">
+								<td colspan="6" class="text-center text-muted py-4">
+									Belum ada transaksi.
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="d-flex justify-content-between align-items-center mt-3">
+					<span class="text-muted small" th:text="${page.totalElements} + ' data'">0 data</span>
+					<div th:replace="~{layout/pagination :: pager(${page}, '/transaksi', '')}"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

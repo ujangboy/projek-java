@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: page('Transaksi Baru', ~{::section})}">
+<body>
+	<section>
+		<div class="page-heading">
+			<div>
+				<span class="eyebrow">Operasional</span>
+				<h1>Transaksi Baru</h1>
+				<p>Pilih pelanggan dan barang yang dibeli.</p>
+			</div>
+		</div>
+
+		<form th:action="@{/transaksi}" th:object="${transaksiForm}" method="post">
+			<div class="card app-card mb-3">
+				<div class="card-body">
+					<label for="idPelanggan" class="form-label">Pelanggan <span class="text-danger">*</span></label>
+					<select id="idPelanggan" class="form-select" th:field="*{idPelanggan}" required>
+						<option value="">Pilih pelanggan...</option>
+						<option th:each="p : ${pelangganList}" th:value="${p.idPelanggan}"
+							th:text="${p.nama + (p.noTelepon != null ? ' — ' + p.noTelepon : '')}">
+							Budi Santoso
+						</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="card app-card mb-3">
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table align-middle mb-0">
+							<thead>
+								<tr>
+									<th style="min-width: 260px">Barang</th>
+									<th style="width: 120px">Jumlah</th>
+									<th class="text-end">Harga</th>
+									<th class="text-end">Subtotal</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody id="itemRows">
+								<tr class="item-row" th:each="item, stat : *{items}">
+									<td>
+										<select class="form-select barang-select" data-name="idBarang"
+											th:name="|items[${stat.index}].idBarang|">
+											<option value="">Pilih barang...</option>
+											<option th:each="b : ${barangList}" th:value="${b.idBarang}"
+												th:attr="data-harga=${b.harga},data-stok=${b.stok},data-satuan=${b.satuan}"
+												th:selected="${item.idBarang == b.idBarang}"
+												th:text="${b.kodeBarang + ' — ' + b.namaBarang + ' (' + b.satuan + ')'}">
+												BRG-001
+											</option>
+										</select>
+										<div class="form-text stock-info"></div>
+									</td>
+									<td>
+										<input type="number" class="form-control jumlah-input" data-name="jumlah"
+											th:name="|items[${stat.index}].jumlah|" th:value="${item.jumlah}"
+											min="1" step="1" required>
+									</td>
+									<td class="text-end harga-satuan">-</td>
+									<td class="text-end subtotal">-</td>
+									<td class="text-end">
+										<button type="button" class="btn btn-sm btn-outline-danger remove-row"
+											aria-label="Hapus baris">
+											<i class="bi bi-x-lg"></i>
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<button type="button" class="btn btn-outline-primary btn-sm mt-3" id="addRow">
+						<i class="bi bi-plus-lg me-1"></i>Tambah Baris
+					</button>
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+				<div class="d-flex gap-2">
+					<button class="btn btn-primary" type="submit">
+						<i class="bi bi-save me-1"></i>Simpan Transaksi
+					</button>
+					<a class="btn btn-outline-secondary" th:href="@{/transaksi}">Batal</a>
+				</div>
+				<div class="text-end">
+					<span class="text-muted me-2">Total</span>
+					<span class="fs-4 fw-bold" id="grandTotal">Rp 0,00</span>
+				</div>
+			</div>
+		</form>
+
+		<template id="itemRowTemplate">
+			<tr class="item-row">
+				<td>
+					<select class="form-select barang-select" data-name="idBarang">
+						<option value="">Pilih barang...</option>
+						<option th:each="b : ${barangList}" th:value="${b.idBarang}"
+							th:attr="data-harga=${b.harga},data-stok=${b.stok},data-satuan=${b.satuan}"
+							th:text="${b.kodeBarang + ' — ' + b.namaBarang + ' (' + b.satuan + ')'}">
+							BRG-001
+						</option>
+					</select>
+					<div class="form-text stock-info"></div>
+				</td>
+				<td>
+					<input type="number" class="form-control jumlah-input" data-name="jumlah" value="1"
+						min="1" step="1" required>
+				</td>
+				<td class="text-end harga-satuan">-</td>
+				<td class="text-end subtotal">-</td>
+				<td class="text-end">
+					<button type="button" class="btn btn-sm btn-outline-danger remove-row" aria-label="Hapus baris">
+						<i class="bi bi-x-lg"></i>
+					</button>
+				</td>
+			</tr>
+		</template>
+
+		<script th:src="@{/js/transaksi-form.js}"></script>
+	</section>
+</body>
+</html>

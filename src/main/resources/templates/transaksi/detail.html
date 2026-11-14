@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: page('Detail Transaksi', ~{::section})}">
+<body>
+	<section>
+		<div class="page-heading no-print">
+			<div>
+				<span class="eyebrow">Operasional</span>
+				<h1>Detail Transaksi</h1>
+				<p>Struk penjualan siap dicetak.</p>
+			</div>
+			<div class="d-flex gap-2">
+				<button type="button" class="btn btn-primary" onclick="window.print()">
+					<i class="bi bi-printer me-1"></i>Cetak
+				</button>
+				<a class="btn btn-outline-secondary" th:href="@{/transaksi}">Kembali</a>
+			</div>
+		</div>
+
+		<div class="card app-card receipt">
+			<div class="card-body">
+				<div class="receipt-head text-center">
+					<h2 class="h4 mb-1"
+						th:text="${identitas != null ? identitas.namaInstansi : 'Sistem Penjualan'}">Toko Sinar Jaya</h2>
+					<p class="mb-0" th:if="${identitas != null}" th:text="${identitas.alamat}">
+						Jl. Merdeka No. 10, Bandung
+					</p>
+					<p class="mb-0 text-muted"
+						th:if="${identitas != null and (identitas.noTelepon != null or identitas.email != null)}">
+						<span th:if="${identitas.noTelepon != null}" th:text="${identitas.noTelepon}">081234567890</span>
+						<span th:if="${identitas.noTelepon != null and identitas.email != null}"> · </span>
+						<span th:if="${identitas.email != null}" th:text="${identitas.email}">info@sinarjaya.local</span>
+					</p>
+				</div>
+
+				<div class="row g-3 mb-4">
+					<div class="col-12 col-sm-6">
+						<span class="text-muted small d-block">Nomor</span>
+						<span class="fw-semibold" th:text="${transaksi.nomorTransaksi}">TRX-20261114-0001</span>
+					</div>
+					<div class="col-12 col-sm-6 text-sm-end">
+						<span class="text-muted small d-block">Tanggal</span>
+						<span th:text="${#temporals.format(transaksi.tanggal, 'dd-MM-yyyy HH:mm')}">14-11-2026 10:00</span>
+					</div>
+					<div class="col-12 col-sm-6">
+						<span class="text-muted small d-block">Pelanggan</span>
+						<span th:text="${transaksi.pelanggan.nama}">Budi Santoso</span>
+					</div>
+					<div class="col-12 col-sm-6 text-sm-end">
+						<span class="text-muted small d-block">Kasir</span>
+						<span th:text="${transaksi.user.nama}">Administrator</span>
+					</div>
+				</div>
+
+				<div class="table-responsive">
+					<table class="table align-middle mb-0">
+						<thead>
+							<tr>
+								<th>Barang</th>
+								<th class="text-end">Harga</th>
+								<th class="text-center">Jumlah</th>
+								<th class="text-end">Subtotal</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="d : ${transaksi.details}">
+								<td>
+									<span class="fw-semibold" th:text="${d.barang.namaBarang}">Kertas HVS</span>
+									<div class="text-muted small" th:text="${d.barang.kodeBarang}">BRG-001</div>
+								</td>
+								<td class="text-end"
+									th:text="${'Rp ' + #numbers.formatDecimal(d.hargaSatuan, 1, 'POINT', 2, 'COMMA')}">
+									Rp 55.000,00
+								</td>
+								<td class="text-center" th:text="${d.jumlah + ' ' + d.barang.satuan}">2 rim</td>
+								<td class="text-end"
+									th:text="${'Rp ' + #numbers.formatDecimal(d.subtotal, 1, 'POINT', 2, 'COMMA')}">
+									Rp 110.000,00
+								</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="3" class="text-end fw-semibold">Total</td>
+								<td class="text-end receipt-total"
+									th:text="${'Rp ' + #numbers.formatDecimal(transaksi.total, 1, 'POINT', 2, 'COMMA')}">
+									Rp 0,00
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+
+				<p class="text-center text-muted small mt-4 mb-0">Terima kasih telah berbelanja.</p>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

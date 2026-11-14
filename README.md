@@ -4,7 +4,7 @@ Aplikasi web penjualan lokal berbasis Java Spring Boot + MySQL Laragon. Tanpa Do
 
 ## Status
 
-Phase 2 — Data Master: CRUD pelanggan dan barang dengan pencarian, pagination, validasi server-side, dan proteksi Foreign Key.
+Phase 3 — Transaksi Penjualan: transaksi multi-item atomik dengan snapshot harga, merge duplikat, validasi/kunci stok (`PESSIMISTIC_WRITE`), rollback saat stok kurang, daftar transaksi terbaru, dan struk cetak dengan kop identitas instansi.
 
 | Tabel | Isi |
 |---|---|

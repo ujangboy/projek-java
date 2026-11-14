@@ -17,6 +17,14 @@
 		<div class="app-main">
 			<header th:replace="~{layout/fragments :: topbar}"></header>
 			<main id="appContent" class="app-content">
+				<div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+					<i class="bi bi-check-circle-fill me-1"></i><span th:text="${success}">Berhasil.</span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+				</div>
+				<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+					<i class="bi bi-exclamation-triangle-fill me-1"></i><span th:text="${error}">Gagal.</span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+				</div>
 				<div th:insert="${content}"></div>
 			</main>
 		</div>

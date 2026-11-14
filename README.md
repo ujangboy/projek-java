@@ -4,7 +4,7 @@ Aplikasi web penjualan lokal berbasis Java Spring Boot + MySQL Laragon. Tanpa Do
 
 ## Status
 
-Phase 1 — Database: enam tabel dengan Primary Key dan Foreign Key aktif, seed data master, login BCrypt.
+Phase 2 — Data Master: CRUD pelanggan dan barang dengan pencarian, pagination, validasi server-side, dan proteksi Foreign Key.
 
 | Tabel | Isi |
 |---|---|

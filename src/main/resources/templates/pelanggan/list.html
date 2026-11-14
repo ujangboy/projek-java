@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: page('Data Pelanggan', ~{::section})}">
+<body>
+	<section>
+		<div class="page-heading">
+			<div>
+				<span class="eyebrow">Data Master</span>
+				<h1>Data Pelanggan</h1>
+				<p th:text="${page.totalElements} + ' pelanggan terdaftar'">5 pelanggan terdaftar</p>
+			</div>
+			<a class="btn btn-primary" th:href="@{/pelanggan/new}">
+				<i class="bi bi-plus-lg me-1"></i>Tambah Pelanggan
+			</a>
+		</div>
+
+		<div class="card app-card">
+			<div class="card-body">
+				<form class="toolbar" method="get" th:action="@{/pelanggan}" role="search">
+					<div class="input-group">
+						<span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+						<input type="search" class="form-control" name="q" th:value="${q}"
+							placeholder="Cari nama pelanggan..." aria-label="Cari pelanggan">
+						<button class="btn btn-outline-secondary" type="submit">Cari</button>
+					</div>
+					<a th:if="${q != null and !q.isEmpty()}" class="btn btn-link" th:href="@{/pelanggan}">Reset</a>
+				</form>
+
+				<div class="table-responsive">
+					<table class="table table-hover align-middle mb-0">
+						<thead>
+							<tr>
+								<th>Nama</th>
+								<th>Alamat</th>
+								<th>No. Telepon</th>
+								<th>Email</th>
+								<th class="text-end">Aksi</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="p : ${page.content}">
+								<td class="fw-semibold" th:text="${p.nama}">Budi Santoso</td>
+								<td th:text="${p.alamat ?: '-'}">Jl. Cihampelas</td>
+								<td th:text="${p.noTelepon ?: '-'}">081234567801</td>
+								<td th:text="${p.email ?: '-'}">budi@example.com</td>
+								<td class="text-end text-nowrap">
+									<a class="btn btn-sm btn-outline-secondary"
+										th:href="@{/pelanggan/{id}/edit(id=${p.idPelanggan})}">
+										<i class="bi bi-pencil"></i> Edit
+									</a>
+									<form class="d-inline" method="post"
+										th:action="@{/pelanggan/{id}/delete(id=${p.idPelanggan})}"
+										onsubmit="return confirm('Hapus pelanggan ini?')">
+										<button class="btn btn-sm btn-outline-danger" type="submit">
+											<i class="bi bi-trash"></i> Hapus
+										</button>
+									</form>
+								</td>
+							</tr>
+							<tr th:if="${page.empty}">
+								<td colspan="5" class="text-center text-muted py-4">
+									Tidak ada pelanggan yang cocok.
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="d-flex justify-content-between align-items-center mt-3">
+					<span class="text-muted small" th:text="${page.totalElements} + ' data'">5 data</span>
+					<div th:replace="~{layout/pagination :: pager(${page}, '/pelanggan', ${q})}"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

@@ -25,10 +25,12 @@
 				</a>
 
 				<span class="app-nav-label">Data Master</span>
-				<span class="nav-link disabled"><i class="bi bi-people"></i> Data Pelanggan
-					<span class="badge badge-soon">Segera</span></span>
-				<span class="nav-link disabled"><i class="bi bi-box-seam"></i> Data Barang
-					<span class="badge badge-soon">Segera</span></span>
+				<a class="nav-link" th:classappend="${activeMenu == 'pelanggan'} ? 'active'" th:href="@{/pelanggan}">
+					<i class="bi bi-people"></i> Data Pelanggan
+				</a>
+				<a class="nav-link" th:classappend="${activeMenu == 'barang'} ? 'active'" th:href="@{/barang}">
+					<i class="bi bi-box-seam"></i> Data Barang
+				</a>
 
 				<span class="app-nav-label">Operasional</span>
 				<span class="nav-link disabled"><i class="bi bi-receipt"></i> Transaksi
@@ -43,8 +45,8 @@
 
 			<div class="app-sidebar-footer">
 				<div class="d-flex justify-content-between">
-					<span>Phase 0</span>
-					<span>Fondasi</span>
+					<span>Phase 2</span>
+					<span>Data Master</span>
 				</div>
 			</div>
 		</div>

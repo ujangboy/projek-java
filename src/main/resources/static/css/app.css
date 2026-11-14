@@ -280,3 +280,41 @@ body {
 	font-weight: 700;
 	margin: 0 0 .35rem;
 }
+
+/* Data tables */
+.toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: .75rem;
+	margin-bottom: 1rem;
+}
+
+.toolbar .input-group {
+	max-width: 420px;
+}
+
+.app-card .table > :not(caption) > * > * {
+	padding: .7rem .9rem;
+}
+
+.app-card .table thead th {
+	background: #f8fafc;
+	color: #64748b;
+	font-size: .72rem;
+	font-weight: 700;
+	letter-spacing: .05em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.form-card {
+	max-width: 780px;
+}
+
+@media (max-width: 575.98px) {
+	.page-heading {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+}

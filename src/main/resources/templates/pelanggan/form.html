@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: page(${pageTitle}, ~{::section})}">
+<body>
+	<section>
+		<div class="page-heading">
+			<div>
+				<span class="eyebrow">Data Master</span>
+				<h1 th:text="${pageTitle}">Tambah Pelanggan</h1>
+				<p>Isi data pelanggan dengan lengkap.</p>
+			</div>
+		</div>
+
+		<div class="card app-card form-card">
+			<div class="card-body">
+				<form th:action="${formAction}" th:object="${pelanggan}" method="post" novalidate>
+					<div class="mb-3">
+						<label for="nama" class="form-label">Nama Pelanggan <span class="text-danger">*</span></label>
+						<input type="text" id="nama" class="form-control" th:field="*{nama}"
+							th:classappend="${#fields.hasErrors('nama')} ? 'is-invalid'"
+							maxlength="100" required>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('nama')}" th:errors="*{nama}"></div>
+					</div>
+
+					<div class="mb-3">
+						<label for="alamat" class="form-label">Alamat</label>
+						<textarea id="alamat" class="form-control" rows="2" th:field="*{alamat}"
+							th:classappend="${#fields.hasErrors('alamat')} ? 'is-invalid'"
+							maxlength="255"></textarea>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('alamat')}" th:errors="*{alamat}"></div>
+					</div>
+
+					<div class="row g-3">
+						<div class="col-12 col-md-6">
+							<label for="noTelepon" class="form-label">No. Telepon</label>
+							<input type="text" id="noTelepon" class="form-control" th:field="*{noTelepon}"
+								th:classappend="${#fields.hasErrors('noTelepon')} ? 'is-invalid'"
+								maxlength="20">
+							<div class="invalid-feedback" th:if="${#fields.hasErrors('noTelepon')}" th:errors="*{noTelepon}"></div>
+						</div>
+						<div class="col-12 col-md-6">
+							<label for="email" class="form-label">Email</label>
+							<input type="email" id="email" class="form-control" th:field="*{email}"
+								th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+								maxlength="100">
+							<div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+						</div>
+					</div>
+
+					<div class="d-flex gap-2 pt-4">
+						<button class="btn btn-primary" type="submit">
+							<i class="bi bi-save me-1"></i>Simpan
+						</button>
+						<a class="btn btn-outline-secondary" th:href="@{/pelanggan}">Batal</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

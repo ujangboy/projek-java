@@ -1,0 +1,42 @@
+<jasperReport name="laporan_barang" language="java" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="30" bottomMargin="30">
+	<parameter name="judul" class="java.lang.String"/>
+	<parameter name="instansi" class="java.lang.String"/>
+	<parameter name="alamat" class="java.lang.String"/>
+	<parameter name="kontak" class="java.lang.String"/>
+	<parameter name="periode" class="java.lang.String"/>
+	<parameter name="summary" class="java.lang.String"/>
+	<field name="no" class="java.lang.Integer"/>
+	<field name="kode" class="java.lang.String"/>
+	<field name="nama" class="java.lang.String"/>
+	<field name="satuan" class="java.lang.String"/>
+	<field name="qty" class="java.lang.Long"/>
+	<field name="nilai" class="java.math.BigDecimal"/>
+	<title height="90">
+		<element kind="textField" x="0" y="0" width="515" height="18" fontSize="14.0" bold="true" hTextAlign="Center"><expression><![CDATA[$P{instansi}]]></expression></element>
+		<element kind="textField" x="0" y="18" width="515" height="14" hTextAlign="Center"><expression><![CDATA[$P{alamat}]]></expression></element>
+		<element kind="textField" x="0" y="32" width="515" height="14" hTextAlign="Center"><expression><![CDATA[$P{kontak}]]></expression></element>
+		<element kind="textField" x="0" y="52" width="515" height="16" fontSize="12.0" bold="true" hTextAlign="Center"><expression><![CDATA[$P{judul}]]></expression></element>
+		<element kind="textField" x="0" y="68" width="515" height="14" hTextAlign="Center"><expression><![CDATA[$P{periode}]]></expression></element>
+	</title>
+	<columnHeader height="18">
+		<element kind="staticText" x="0" y="0" width="30" height="18" bold="true"><text><![CDATA[No]]></text></element>
+		<element kind="staticText" x="30" y="0" width="70" height="18" bold="true"><text><![CDATA[Kode]]></text></element>
+		<element kind="staticText" x="100" y="0" width="210" height="18" bold="true"><text><![CDATA[Nama Barang]]></text></element>
+		<element kind="staticText" x="310" y="0" width="60" height="18" bold="true"><text><![CDATA[Satuan]]></text></element>
+		<element kind="staticText" x="370" y="0" width="60" height="18" bold="true" hTextAlign="Right"><text><![CDATA[Qty]]></text></element>
+		<element kind="staticText" x="430" y="0" width="85" height="18" bold="true" hTextAlign="Right"><text><![CDATA[Total Nilai]]></text></element>
+	</columnHeader>
+	<detail>
+		<band height="16">
+			<element kind="textField" x="0" y="0" width="30" height="16"><expression><![CDATA[$F{no}]]></expression></element>
+			<element kind="textField" x="30" y="0" width="70" height="16"><expression><![CDATA[$F{kode}]]></expression></element>
+			<element kind="textField" x="100" y="0" width="210" height="16"><expression><![CDATA[$F{nama}]]></expression></element>
+			<element kind="textField" x="310" y="0" width="60" height="16"><expression><![CDATA[$F{satuan}]]></expression></element>
+			<element kind="textField" x="370" y="0" width="60" height="16" hTextAlign="Right"><expression><![CDATA[$F{qty}]]></expression></element>
+			<element kind="textField" x="430" y="0" width="85" height="16" hTextAlign="Right" pattern="#,##0.00"><expression><![CDATA[$F{nilai}]]></expression></element>
+		</band>
+	</detail>
+	<summary height="20">
+		<element kind="textField" x="0" y="4" width="515" height="16" bold="true" hTextAlign="Right"><expression><![CDATA[$P{summary}]]></expression></element>
+	</summary>
+</jasperReport>

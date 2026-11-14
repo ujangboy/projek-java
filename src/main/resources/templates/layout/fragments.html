@@ -36,8 +36,9 @@
 				<a class="nav-link" th:classappend="${activeMenu == 'transaksi'} ? 'active'" th:href="@{/transaksi}">
 					<i class="bi bi-receipt"></i> Transaksi
 				</a>
-				<span class="nav-link disabled"><i class="bi bi-file-earmark-bar-graph"></i> Laporan
-					<span class="badge badge-soon">Segera</span></span>
+				<a class="nav-link" th:classappend="${activeMenu == 'laporan'} ? 'active'" th:href="@{/laporan}">
+					<i class="bi bi-file-earmark-bar-graph"></i> Laporan
+				</a>
 
 				<span class="app-nav-label">Sistem</span>
 				<span class="nav-link disabled"><i class="bi bi-gear"></i> Pengaturan
@@ -46,8 +47,8 @@
 
 			<div class="app-sidebar-footer">
 				<div class="d-flex justify-content-between">
-					<span>Phase 4</span>
-					<span>Dashboard</span>
+					<span>Phase 5</span>
+					<span>Laporan</span>
 				</div>
 			</div>
 		</div>

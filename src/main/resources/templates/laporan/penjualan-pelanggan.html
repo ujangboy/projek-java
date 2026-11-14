@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: page('Laporan Penjualan per Pelanggan', ~{::section})}">
+<body>
+	<section>
+		<div class="page-heading no-print">
+			<div>
+				<span class="eyebrow">Laporan</span>
+				<h1>Laporan Penjualan per Pelanggan</h1>
+			</div>
+			<a class="btn btn-outline-secondary" th:href="@{/laporan}">Kembali</a>
+		</div>
+
+		<div class="card app-card mb-3 no-print">
+			<div class="card-body">
+				<form method="get" th:action="@{/laporan/penjualan-pelanggan}" class="row g-2 align-items-end">
+					<div class="col-12 col-md-3">
+						<label class="form-label">Dari Tanggal</label>
+						<input type="date" class="form-control" name="from" th:value="${from}" required>
+					</div>
+					<div class="col-12 col-md-3">
+						<label class="form-label">Sampai Tanggal</label>
+						<input type="date" class="form-control" name="to" th:value="${to}" required>
+					</div>
+					<div class="col-12 col-md-3">
+						<label class="form-label">Pelanggan</label>
+						<select class="form-select" name="idPelanggan">
+							<option value="">Semua</option>
+							<option th:each="p : ${pelangganList}" th:value="${p.idPelanggan}" th:text="${p.nama}"
+								th:selected="${idPelanggan != null and idPelanggan == p.idPelanggan}">P</option>
+						</select>
+					</div>
+					<div class="col-12 col-md-3 d-flex gap-2 flex-wrap">
+						<button class="btn btn-primary" type="submit">Tampilkan</button>
+						<button class="btn btn-outline-success" type="submit" th:formaction="@{/laporan/penjualan-pelanggan/excel}">Excel</button>
+						<button class="btn btn-outline-danger" type="submit" th:formaction="@{/laporan/penjualan-pelanggan/pdf}">PDF</button>
+						<button class="btn btn-outline-secondary" type="button" onclick="window.print()">Cetak</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="card app-card">
+			<div class="card-body">
+				<div class="text-center mb-3">
+					<h2 class="h5 mb-0" th:text="${identitas != null ? identitas.namaInstansi : 'Sistem Penjualan'}">Instansi</h2>
+					<div class="text-muted small" th:if="${identitas != null}" th:text="${identitas.alamat}">Alamat</div>
+					<div class="text-muted small" th:if="${identitas != null}">
+						<span th:text="${identitas.noTelepon}"></span>
+						<span th:if="${identitas.email != null}"> · </span>
+						<span th:text="${identitas.email}"></span>
+					</div>
+					<div class="fw-semibold mt-2">Laporan Penjualan per Pelanggan</div>
+					<div class="text-muted small" th:if="${periode != null}" th:text="${periode}">Periode</div>
+				</div>
+
+				<div th:if="${rows == null}" class="text-muted text-center py-3">Pilih periode lalu klik Tampilkan.</div>
+				<div th:if="${rows != null}">
+					<div class="table-responsive">
+						<table class="table table-sm align-middle">
+							<thead>
+								<tr>
+									<th>No</th><th>Nama Pelanggan</th><th class="text-end">Jumlah Transaksi</th><th class="text-end">Total Omzet</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="r, i : ${rows}">
+									<td th:text="${i.count}">1</td>
+									<td th:text="${r.nama}">Nama</td>
+									<td class="text-end" th:text="${r.jumlahTransaksi}">0</td>
+									<td class="text-end" th:text="${'Rp ' + #numbers.formatDecimal(r.totalOmzet, 1, 'POINT', 2, 'COMMA')}">Rp 0,00</td>
+								</tr>
+								<tr th:if="${#lists.isEmpty(rows)}">
+									<td colspan="4" class="text-center text-muted py-3">Tidak ada data pada periode/filter ini.</td>
+								</tr>
+							</tbody>
+							<tfoot th:if="${!#lists.isEmpty(rows)}">
+								<tr>
+									<th colspan="2" class="text-end">Total</th>
+									<th class="text-end" th:text="${sumTrx}">0</th>
+									<th class="text-end" th:text="${'Rp ' + #numbers.formatDecimal(sumOmzet, 1, 'POINT', 2, 'COMMA')}">Rp 0,00</th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

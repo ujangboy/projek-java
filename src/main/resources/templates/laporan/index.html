@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: page('Laporan', ~{::section})}">
+<body>
+	<section>
+		<div class="page-heading">
+			<div>
+				<span class="eyebrow">Operasional</span>
+				<h1>Laporan</h1>
+				<p>Pilih laporan, tentukan periode/filter, lalu tampilkan, cetak, atau export.</p>
+			</div>
+		</div>
+
+		<div class="row g-3">
+			<div class="col-12 col-md-6">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<h2 class="h5">Laporan Transaksi</h2>
+						<p class="text-muted">Daftar transaksi per periode (opsional filter pelanggan).</p>
+						<a class="btn btn-primary btn-sm" th:href="@{/laporan/transaksi}">Buka</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-6">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<h2 class="h5">Laporan Detail Penjualan</h2>
+						<p class="text-muted">Rincian barang terjual per periode (opsional pelanggan/kata kunci transaksi).</p>
+						<a class="btn btn-primary btn-sm" th:href="@{/laporan/detail-penjualan}">Buka</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-6">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<h2 class="h5">Laporan Penjualan per Barang</h2>
+						<p class="text-muted">Rekap qty dan nilai penjualan per barang dalam periode.</p>
+						<a class="btn btn-primary btn-sm" th:href="@{/laporan/penjualan-barang}">Buka</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-6">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<h2 class="h5">Laporan Penjualan per Pelanggan</h2>
+						<p class="text-muted">Rekap jumlah transaksi dan omzet per pelanggan (opsional filter pelanggan).</p>
+						<a class="btn btn-primary btn-sm" th:href="@{/laporan/penjualan-pelanggan}">Buka</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

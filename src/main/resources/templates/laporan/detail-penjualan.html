@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layout/base :: page('Laporan Detail Penjualan', ~{::section})}">
+<body>
+	<section>
+		<div class="page-heading no-print">
+			<div>
+				<span class="eyebrow">Laporan</span>
+				<h1>Laporan Detail Penjualan</h1>
+			</div>
+			<a class="btn btn-outline-secondary" th:href="@{/laporan}">Kembali</a>
+		</div>
+
+		<div class="card app-card mb-3 no-print">
+			<div class="card-body">
+				<form method="get" th:action="@{/laporan/detail-penjualan}" class="row g-2 align-items-end">
+					<div class="col-12 col-md-3">
+						<label class="form-label">Dari Tanggal</label>
+						<input type="date" class="form-control" name="from" th:value="${from}" required>
+					</div>
+					<div class="col-12 col-md-3">
+						<label class="form-label">Sampai Tanggal</label>
+						<input type="date" class="form-control" name="to" th:value="${to}" required>
+					</div>
+					<div class="col-12 col-md-2">
+						<label class="form-label">Pelanggan</label>
+						<select class="form-select" name="idPelanggan">
+							<option value="">Semua</option>
+							<option th:each="p : ${pelangganList}" th:value="${p.idPelanggan}" th:text="${p.nama}"
+								th:selected="${idPelanggan != null and idPelanggan == p.idPelanggan}">P</option>
+						</select>
+					</div>
+					<div class="col-12 col-md-2">
+						<label class="form-label">Kata Kunci/ID Trx</label>
+						<input type="text" class="form-control" name="q" th:value="${q}" placeholder="No/ID/nama">
+					</div>
+					<div class="col-12 col-md-2 d-flex gap-2 flex-wrap">
+						<button class="btn btn-primary" type="submit">Tampilkan</button>
+						<button class="btn btn-outline-success" type="submit" th:formaction="@{/laporan/detail-penjualan/excel}">Excel</button>
+						<button class="btn btn-outline-danger" type="submit" th:formaction="@{/laporan/detail-penjualan/pdf}">PDF</button>
+						<button class="btn btn-outline-secondary" type="button" onclick="window.print()">Cetak</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="card app-card">
+			<div class="card-body">
+				<div class="text-center mb-3">
+					<h2 class="h5 mb-0" th:text="${identitas != null ? identitas.namaInstansi : 'Sistem Penjualan'}">Instansi</h2>
+					<div class="text-muted small" th:if="${identitas != null}" th:text="${identitas.alamat}">Alamat</div>
+					<div class="text-muted small" th:if="${identitas != null}">
+						<span th:text="${identitas.noTelepon}"></span>
+						<span th:if="${identitas.email != null}"> · </span>
+						<span th:text="${identitas.email}"></span>
+					</div>
+					<div class="fw-semibold mt-2">Laporan Detail Penjualan</div>
+					<div class="text-muted small" th:if="${periode != null}" th:text="${periode}">Periode</div>
+				</div>
+
+				<div th:if="${rows == null}" class="text-muted text-center py-3">Pilih periode lalu klik Tampilkan.</div>
+				<div th:if="${rows != null}">
+					<div class="table-responsive">
+						<table class="table table-sm align-middle">
+							<thead>
+								<tr>
+									<th>No</th><th>Nomor</th><th>Tanggal</th><th>Pelanggan</th><th>Barang</th>
+									<th class="text-end">Jumlah</th><th class="text-end">Harga Satuan</th><th class="text-end">Subtotal</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="r, i : ${rows}">
+									<td th:text="${i.count}">1</td>
+									<td th:text="${r.transaksi.nomorTransaksi}">TRX</td>
+									<td th:text="${#temporals.format(r.transaksi.tanggal, 'dd-MM-yyyy HH:mm')}">-</td>
+									<td th:text="${r.transaksi.pelanggan.nama}">-</td>
+									<td th:text="${r.barang.namaBarang}">-</td>
+									<td class="text-end" th:text="${r.jumlah}">0</td>
+									<td class="text-end" th:text="${'Rp ' + #numbers.formatDecimal(r.hargaSatuan, 1, 'POINT', 2, 'COMMA')}">Rp 0,00</td>
+									<td class="text-end" th:text="${'Rp ' + #numbers.formatDecimal(r.subtotal, 1, 'POINT', 2, 'COMMA')}">Rp 0,00</td>
+								</tr>
+								<tr th:if="${#lists.isEmpty(rows)}">
+									<td colspan="8" class="text-center text-muted py-3">Tidak ada data pada periode/filter ini.</td>
+								</tr>
+							</tbody>
+							<tfoot th:if="${!#lists.isEmpty(rows)}">
+								<tr>
+									<th colspan="5" class="text-end">Total Qty / Total Nilai</th>
+									<th class="text-end" th:text="${sumQty}">0</th>
+									<th></th>
+									<th class="text-end" th:text="${'Rp ' + #numbers.formatDecimal(sumSubtotal, 1, 'POINT', 2, 'COMMA')}">Rp 0,00</th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

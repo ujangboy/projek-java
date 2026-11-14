@@ -4,7 +4,7 @@ Aplikasi web penjualan lokal berbasis Java Spring Boot + MySQL Laragon. Tanpa Do
 
 ## Status
 
-Phase 4 — Dashboard & Statistik: ringkasan data nyata (total pelanggan/barang/transaksi, omzet hari ini/bulan ini/total), transaksi terbaru, dan daftar stok menipis (`stok <= stok_minimum`).
+Phase 5 — Laporan: 4 laporan (Transaksi, Detail Penjualan, Penjualan per Barang, Penjualan per Pelanggan) dengan filter tanggal inklusif dan filter relevan, preview HTML, export Excel (POI), export PDF (JasperReports) dengan kop `identitas_instansi`, dan cetak (seluruh hasil filter).
 
 | Tabel | Isi |
 |---|---|

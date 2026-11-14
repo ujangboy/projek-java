@@ -20,7 +20,12 @@ body {
 }
 
 .app-main {
+	flex: 1 1 auto;
 	min-width: 0;
+}
+
+.app-content {
+	width: 100%;
 }
 
 .app-content {
@@ -123,10 +128,14 @@ body {
 
 .app-sidebar-footer {
 	margin-top: auto;
-	padding: .9rem 1.25rem;
+	padding: .9rem 1.25rem calc(.9rem + env(safe-area-inset-bottom, 0px));
 	border-top: 1px solid #1e293b;
-	color: #64748b;
+	color: #94a3b8;
 	font-size: .75rem;
+}
+
+.app-sidebar-footer .text-muted {
+	color: inherit !important;
 }
 
 /* Desktop: offcanvas-lg becomes a permanent column */
@@ -135,6 +144,7 @@ body {
 		position: sticky;
 		top: 0;
 		height: 100vh !important;
+		height: 100dvh !important;
 		width: var(--app-sidebar-width) !important;
 		flex: 0 0 var(--app-sidebar-width);
 		display: flex;

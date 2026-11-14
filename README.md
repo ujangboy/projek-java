@@ -4,7 +4,16 @@ Aplikasi web penjualan lokal berbasis Java Spring Boot + MySQL Laragon. Tanpa Do
 
 ## Status
 
-Phase 0 — Fondasi: Spring Boot, Flyway, MySQL, layout Bootstrap, login BCrypt.
+Phase 1 — Database: enam tabel dengan Primary Key dan Foreign Key aktif, seed data master, login BCrypt.
+
+| Tabel | Isi |
+|---|---|
+| `users` | akun admin |
+| `pelanggan` | data pelanggan |
+| `barang` | data barang dan stok |
+| `transaksi` | header transaksi penjualan |
+| `detail_transaksi` | rincian barang per transaksi |
+| `identitas_instansi` | identitas kop surat |
 
 ## Prasyarat
 

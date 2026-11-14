@@ -1,0 +1,10 @@
+CREATE TABLE identitas_instansi (
+    id_instansi BIGINT NOT NULL AUTO_INCREMENT,
+    nama_instansi VARCHAR(150) NOT NULL,
+    alamat VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NULL,
+    no_telepon VARCHAR(30) NULL,
+    logo VARCHAR(255) NULL,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_instansi)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

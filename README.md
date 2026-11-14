@@ -4,7 +4,7 @@ Aplikasi web penjualan lokal berbasis Java Spring Boot + MySQL Laragon. Tanpa Do
 
 ## Status
 
-Phase 3 — Transaksi Penjualan: transaksi multi-item atomik dengan snapshot harga, merge duplikat, validasi/kunci stok (`PESSIMISTIC_WRITE`), rollback saat stok kurang, daftar transaksi terbaru, dan struk cetak dengan kop identitas instansi.
+Phase 4 — Dashboard & Statistik: ringkasan data nyata (total pelanggan/barang/transaksi, omzet hari ini/bulan ini/total), transaksi terbaru, dan daftar stok menipis (`stok <= stok_minimum`).
 
 | Tabel | Isi |
 |---|---|

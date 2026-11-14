@@ -30,4 +30,7 @@ public interface BarangRepository extends JpaRepository<Barang, Long> {
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("SELECT b FROM Barang b WHERE b.idBarang IN :ids ORDER BY b.idBarang")
 	List<Barang> findAllForUpdate(@Param("ids") Collection<Long> ids);
+
+	@Query("SELECT b FROM Barang b WHERE b.stok <= b.stokMinimum ORDER BY b.stok ASC, b.namaBarang ASC")
+	List<Barang> findLowStock();
 }

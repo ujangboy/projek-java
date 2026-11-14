@@ -5,31 +5,134 @@
 	<section>
 		<div class="page-heading">
 			<div>
-				<span class="eyebrow">Phase 0</span>
+				<span class="eyebrow">Ringkasan</span>
 				<h1>Dashboard</h1>
-				<p>Selamat datang, <strong th:text="${currentUser}">admin</strong>. Fondasi aplikasi sudah berjalan.</p>
+				<p>Ringkasan penjualan dan stok, <strong th:text="${currentUser}">admin</strong>.</p>
+			</div>
+		</div>
+
+		<div class="row g-3 mb-4">
+			<div class="col-6 col-xl-4">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<div class="text-muted small mb-1">Total Pelanggan</div>
+						<div class="fs-3 fw-bold" th:text="${totalPelanggan}">0</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-xl-4">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<div class="text-muted small mb-1">Total Barang</div>
+						<div class="fs-3 fw-bold" th:text="${totalBarang}">0</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-xl-4">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<div class="text-muted small mb-1">Total Transaksi</div>
+						<div class="fs-3 fw-bold" th:text="${totalTransaksi}">0</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-4">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<div class="text-muted small mb-1">Omzet Hari Ini</div>
+						<div class="fs-4 fw-bold"
+							th:text="${'Rp ' + #numbers.formatDecimal(omzetHariIni, 1, 'POINT', 2, 'COMMA')}">Rp 0,00</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-4">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<div class="text-muted small mb-1">Omzet Bulan Ini</div>
+						<div class="fs-4 fw-bold"
+							th:text="${'Rp ' + #numbers.formatDecimal(omzetBulanIni, 1, 'POINT', 2, 'COMMA')}">Rp 0,00</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-4">
+				<div class="card app-card h-100">
+					<div class="card-body">
+						<div class="text-muted small mb-1">Omzet Total</div>
+						<div class="fs-4 fw-bold"
+							th:text="${'Rp ' + #numbers.formatDecimal(omzetTotal, 1, 'POINT', 2, 'COMMA')}">Rp 0,00</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
 		<div class="row g-3">
-			<div class="col-12 col-xl-8">
+			<div class="col-12 col-xl-7">
 				<div class="card app-card h-100">
 					<div class="card-body">
-						<h2 class="h5 mb-3">Status fondasi</h2>
-						<ul class="checklist">
-							<li><i class="bi bi-check-circle-fill"></i> Spring Boot, Thymeleaf, dan Bootstrap aktif</li>
-							<li><i class="bi bi-check-circle-fill"></i> MySQL Laragon terhubung dan Flyway berjalan</li>
-							<li><i class="bi bi-check-circle-fill"></i> Login admin memakai BCrypt</li>
-						</ul>
+						<div class="d-flex justify-content-between align-items-center mb-3">
+							<h2 class="h5 mb-0">Transaksi Terbaru</h2>
+							<a class="small" th:href="@{/transaksi}">Lihat semua</a>
+						</div>
+						<div class="table-responsive">
+							<table class="table table-sm align-middle mb-0">
+								<thead>
+									<tr>
+										<th>Nomor</th>
+										<th>Tanggal</th>
+										<th>Pelanggan</th>
+										<th class="text-end">Total</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="t : ${recentTransaksi}">
+										<td>
+											<a th:href="@{/transaksi/{id}(id=${t.idTransaksi})}" th:text="${t.nomorTransaksi}">TRX</a>
+										</td>
+										<td th:text="${#temporals.format(t.tanggal, 'dd-MM-yyyy HH:mm')}">-</td>
+										<td th:text="${t.pelanggan.nama}">-</td>
+										<td class="text-end"
+											th:text="${'Rp ' + #numbers.formatDecimal(t.total, 1, 'POINT', 2, 'COMMA')}">Rp 0,00</td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(recentTransaksi)}">
+										<td colspan="4" class="text-center text-muted py-3">Belum ada transaksi.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-12 col-xl-4">
+			<div class="col-12 col-xl-5">
 				<div class="card app-card h-100">
 					<div class="card-body">
-						<h2 class="h5 mb-2">Berikutnya</h2>
-						<p class="text-muted mb-0">Phase 1 menambahkan tabel pelanggan, barang, transaksi, detail
-							transaksi, dan identitas instansi.</p>
+						<div class="d-flex justify-content-between align-items-center mb-3">
+							<h2 class="h5 mb-0">Stok Menipis</h2>
+							<a class="small" th:href="@{/barang}">Lihat barang</a>
+						</div>
+						<div class="table-responsive">
+							<table class="table table-sm align-middle mb-0">
+								<thead>
+									<tr>
+										<th>Barang</th>
+										<th class="text-end">Stok</th>
+										<th class="text-end">Min</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="b : ${lowStock}">
+										<td>
+											<span class="fw-semibold" th:text="${b.kodeBarang}">BRG</span>
+											<div class="text-muted small" th:text="${b.namaBarang}">Nama</div>
+										</td>
+										<td class="text-end" th:text="${b.stok + ' ' + b.satuan}">0</td>
+										<td class="text-end" th:text="${b.stokMinimum}">0</td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(lowStock)}">
+										<td colspan="3" class="text-center text-muted py-3">Tidak ada stok menipis.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>

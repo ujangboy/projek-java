@@ -11,6 +11,8 @@
 			<a class="btn btn-outline-secondary" th:href="@{/laporan}">Kembali</a>
 		</div>
 
+		<div th:if="${error}" class="alert alert-danger no-print" th:text="${error}">Error</div>
+
 		<div class="card app-card mb-3 no-print">
 			<div class="card-body">
 				<form method="get" th:action="@{/laporan/penjualan-pelanggan}" class="row g-2 align-items-end">
@@ -30,11 +32,14 @@
 								th:selected="${idPelanggan != null and idPelanggan == p.idPelanggan}">P</option>
 						</select>
 					</div>
-					<div class="col-12 col-md-3 d-flex gap-2 flex-wrap">
-						<button class="btn btn-primary" type="submit">Tampilkan</button>
-						<button class="btn btn-outline-success" type="submit" th:formaction="@{/laporan/penjualan-pelanggan/excel}">Excel</button>
-						<button class="btn btn-outline-danger" type="submit" th:formaction="@{/laporan/penjualan-pelanggan/pdf}">PDF</button>
-						<button class="btn btn-outline-secondary" type="button" onclick="window.print()">Cetak</button>
+					<div class="col-12 col-md-3">
+						<label class="form-label d-none d-md-block">&nbsp;</label>
+						<div class="d-grid gap-2 d-md-flex flex-md-wrap">
+							<button class="btn btn-primary" type="submit">Tampilkan</button>
+							<button class="btn btn-outline-success" type="submit" th:formaction="@{/laporan/penjualan-pelanggan/excel}">Excel</button>
+							<button class="btn btn-outline-danger" type="submit" th:formaction="@{/laporan/penjualan-pelanggan/pdf}">PDF</button>
+							<button class="btn btn-outline-secondary" type="button" onclick="window.print()">Cetak</button>
+						</div>
 					</div>
 				</form>
 			</div>

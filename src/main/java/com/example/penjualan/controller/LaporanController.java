@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -22,12 +23,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.penjualan.entity.DetailTransaksi;
 import com.example.penjualan.entity.IdentitasInstansi;
@@ -58,7 +61,7 @@ public class LaporanController {
 	private final PelangganRepository pelangganRepository;
 	private final IdentitasInstansiRepository identitasInstansiRepository;
 
-	private final Map<String, JasperReport> reportCache = new HashMap<>();
+	private final Map<String, JasperReport> reportCache = new ConcurrentHashMap<>();
 
 	public LaporanController(TransaksiRepository transaksiRepository, DetailTransaksiRepository detailTransaksiRepository,
 			PelangganRepository pelangganRepository, IdentitasInstansiRepository identitasInstansiRepository) {
@@ -82,10 +85,14 @@ public class LaporanController {
 		prepareCommon(model, from, to);
 		model.addAttribute("idPelanggan", idPelanggan);
 		if (from != null && to != null) {
-			List<Transaksi> rows = transaksiRepository.findReportTransaksi(start(from), end(to), idPelanggan);
-			BigDecimal sum = rows.stream().map(Transaksi::getTotal).reduce(BigDecimal.ZERO, BigDecimal::add);
-			model.addAttribute("rows", rows);
-			model.addAttribute("sumTotal", sum);
+			if (from.isAfter(to)) {
+				model.addAttribute("error", "Tanggal awal tidak boleh melebihi tanggal akhir.");
+			} else {
+				List<Transaksi> rows = transaksiRepository.findReportTransaksi(start(from), end(to), idPelanggan);
+				BigDecimal sum = rows.stream().map(Transaksi::getTotal).reduce(BigDecimal.ZERO, BigDecimal::add);
+				model.addAttribute("rows", rows);
+				model.addAttribute("sumTotal", sum);
+			}
 		}
 		return "laporan/transaksi";
 	}
@@ -94,6 +101,7 @@ public class LaporanController {
 	public ResponseEntity<byte[]> transaksiExcel(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
 			@RequestParam(required = false) Long idPelanggan) throws Exception {
+		requireValidRange(from, to);
 		List<Transaksi> rows = transaksiRepository.findReportTransaksi(start(from), end(to), idPelanggan);
 		BigDecimal sum = rows.stream().map(Transaksi::getTotal).reduce(BigDecimal.ZERO, BigDecimal::add);
 		IdentitasInstansi id = identitas();
@@ -128,6 +136,7 @@ public class LaporanController {
 	public ResponseEntity<byte[]> transaksiPdf(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
 			@RequestParam(required = false) Long idPelanggan) throws Exception {
+		requireValidRange(from, to);
 		List<Transaksi> rows = transaksiRepository.findReportTransaksi(start(from), end(to), idPelanggan);
 		List<Map<String, Object>> data = new ArrayList<>();
 		BigDecimal sum = BigDecimal.ZERO;
@@ -157,12 +166,16 @@ public class LaporanController {
 		model.addAttribute("idPelanggan", idPelanggan);
 		model.addAttribute("q", q);
 		if (from != null && to != null) {
-			List<DetailTransaksi> rows = detailTransaksiRepository.findReportDetails(start(from), end(to), idPelanggan, q);
-			long sumQty = rows.stream().mapToLong(DetailTransaksi::getJumlah).sum();
-			BigDecimal sumSub = rows.stream().map(DetailTransaksi::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add);
-			model.addAttribute("rows", rows);
-			model.addAttribute("sumQty", sumQty);
-			model.addAttribute("sumSubtotal", sumSub);
+			if (from.isAfter(to)) {
+				model.addAttribute("error", "Tanggal awal tidak boleh melebihi tanggal akhir.");
+			} else {
+				List<DetailTransaksi> rows = detailTransaksiRepository.findReportDetails(start(from), end(to), idPelanggan, q);
+				long sumQty = rows.stream().mapToLong(DetailTransaksi::getJumlah).sum();
+				BigDecimal sumSub = rows.stream().map(DetailTransaksi::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add);
+				model.addAttribute("rows", rows);
+				model.addAttribute("sumQty", sumQty);
+				model.addAttribute("sumSubtotal", sumSub);
+			}
 		}
 		return "laporan/detail-penjualan";
 	}
@@ -171,6 +184,7 @@ public class LaporanController {
 	public ResponseEntity<byte[]> detailExcel(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
 			@RequestParam(required = false) Long idPelanggan, @RequestParam(required = false) String q) throws Exception {
+		requireValidRange(from, to);
 		List<DetailTransaksi> rows = detailTransaksiRepository.findReportDetails(start(from), end(to), idPelanggan, q);
 		long sumQty = rows.stream().mapToLong(DetailTransaksi::getJumlah).sum();
 		BigDecimal sumSub = rows.stream().map(DetailTransaksi::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -208,6 +222,7 @@ public class LaporanController {
 	public ResponseEntity<byte[]> detailPdf(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
 			@RequestParam(required = false) Long idPelanggan, @RequestParam(required = false) String q) throws Exception {
+		requireValidRange(from, to);
 		List<DetailTransaksi> rows = detailTransaksiRepository.findReportDetails(start(from), end(to), idPelanggan, q);
 		List<Map<String, Object>> data = new ArrayList<>();
 		long sumQty = 0;
@@ -238,13 +253,17 @@ public class LaporanController {
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to, Model model) {
 		prepareCommon(model, from, to);
 		if (from != null && to != null) {
-			var rows = transaksiRepository.findSalesByBarang(start(from), end(to));
-			long sumQty = rows.stream().mapToLong(r -> r.getQty() == null ? 0 : r.getQty()).sum();
-			BigDecimal sumNilai = rows.stream().map(r -> r.getNilai() == null ? BigDecimal.ZERO : r.getNilai())
-					.reduce(BigDecimal.ZERO, BigDecimal::add);
-			model.addAttribute("rows", rows);
-			model.addAttribute("sumQty", sumQty);
-			model.addAttribute("sumNilai", sumNilai);
+			if (from.isAfter(to)) {
+				model.addAttribute("error", "Tanggal awal tidak boleh melebihi tanggal akhir.");
+			} else {
+				var rows = transaksiRepository.findSalesByBarang(start(from), end(to));
+				long sumQty = rows.stream().mapToLong(r -> r.getQty() == null ? 0 : r.getQty()).sum();
+				BigDecimal sumNilai = rows.stream().map(r -> r.getNilai() == null ? BigDecimal.ZERO : r.getNilai())
+						.reduce(BigDecimal.ZERO, BigDecimal::add);
+				model.addAttribute("rows", rows);
+				model.addAttribute("sumQty", sumQty);
+				model.addAttribute("sumNilai", sumNilai);
+			}
 		}
 		return "laporan/penjualan-barang";
 	}
@@ -252,6 +271,7 @@ public class LaporanController {
 	@GetMapping("/penjualan-barang/excel")
 	public ResponseEntity<byte[]> barangExcel(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) throws Exception {
+		requireValidRange(from, to);
 		var rows = transaksiRepository.findSalesByBarang(start(from), end(to));
 		long sumQty = rows.stream().mapToLong(r -> r.getQty() == null ? 0 : r.getQty()).sum();
 		BigDecimal sumNilai = rows.stream().map(r -> r.getNilai() == null ? BigDecimal.ZERO : r.getNilai())
@@ -287,6 +307,7 @@ public class LaporanController {
 	@GetMapping("/penjualan-barang/pdf")
 	public ResponseEntity<byte[]> barangPdf(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) throws Exception {
+		requireValidRange(from, to);
 		var rows = transaksiRepository.findSalesByBarang(start(from), end(to));
 		List<Map<String, Object>> data = new ArrayList<>();
 		long sumQty = 0;
@@ -317,13 +338,17 @@ public class LaporanController {
 		prepareCommon(model, from, to);
 		model.addAttribute("idPelanggan", idPelanggan);
 		if (from != null && to != null) {
-			var rows = transaksiRepository.findSalesByPelanggan(start(from), end(to), idPelanggan);
-			long sumTrx = rows.stream().mapToLong(r -> r.getJumlahTransaksi() == null ? 0 : r.getJumlahTransaksi()).sum();
-			BigDecimal sumOmzet = rows.stream().map(r -> r.getTotalOmzet() == null ? BigDecimal.ZERO : r.getTotalOmzet())
-					.reduce(BigDecimal.ZERO, BigDecimal::add);
-			model.addAttribute("rows", rows);
-			model.addAttribute("sumTrx", sumTrx);
-			model.addAttribute("sumOmzet", sumOmzet);
+			if (from.isAfter(to)) {
+				model.addAttribute("error", "Tanggal awal tidak boleh melebihi tanggal akhir.");
+			} else {
+				var rows = transaksiRepository.findSalesByPelanggan(start(from), end(to), idPelanggan);
+				long sumTrx = rows.stream().mapToLong(r -> r.getJumlahTransaksi() == null ? 0 : r.getJumlahTransaksi()).sum();
+				BigDecimal sumOmzet = rows.stream().map(r -> r.getTotalOmzet() == null ? BigDecimal.ZERO : r.getTotalOmzet())
+						.reduce(BigDecimal.ZERO, BigDecimal::add);
+				model.addAttribute("rows", rows);
+				model.addAttribute("sumTrx", sumTrx);
+				model.addAttribute("sumOmzet", sumOmzet);
+			}
 		}
 		return "laporan/penjualan-pelanggan";
 	}
@@ -332,6 +357,7 @@ public class LaporanController {
 	public ResponseEntity<byte[]> pelangganExcel(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
 			@RequestParam(required = false) Long idPelanggan) throws Exception {
+		requireValidRange(from, to);
 		var rows = transaksiRepository.findSalesByPelanggan(start(from), end(to), idPelanggan);
 		long sumTrx = rows.stream().mapToLong(r -> r.getJumlahTransaksi() == null ? 0 : r.getJumlahTransaksi()).sum();
 		BigDecimal sumOmzet = rows.stream().map(r -> r.getTotalOmzet() == null ? BigDecimal.ZERO : r.getTotalOmzet())
@@ -366,6 +392,7 @@ public class LaporanController {
 	public ResponseEntity<byte[]> pelangganPdf(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
 			@RequestParam(required = false) Long idPelanggan) throws Exception {
+		requireValidRange(from, to);
 		var rows = transaksiRepository.findSalesByPelanggan(start(from), end(to), idPelanggan);
 		List<Map<String, Object>> data = new ArrayList<>();
 		long sumTrx = 0;
@@ -446,14 +473,20 @@ public class LaporanController {
 		return download(out.toByteArray(), filename, "application/pdf");
 	}
 
-	private synchronized JasperReport compile(String name) throws Exception {
-		JasperReport cached = reportCache.get(name);
-		if (cached != null) return cached;
-		try (InputStream in = getClass().getResourceAsStream("/reports/" + name)) {
-			if (in == null) throw new IllegalStateException("Template tidak ditemukan: " + name);
-			JasperReport report = JasperCompileManager.compileReport(in);
-			reportCache.put(name, report);
-			return report;
+	private JasperReport compile(String name) {
+		return reportCache.computeIfAbsent(name, n -> {
+			try (InputStream in = getClass().getResourceAsStream("/reports/" + n)) {
+				if (in == null) throw new IllegalStateException("Template tidak ditemukan: " + n);
+				return JasperCompileManager.compileReport(in);
+			} catch (Exception e) {
+				throw new IllegalStateException("Gagal memuat template laporan: " + n, e);
+			}
+		});
+	}
+
+	private void requireValidRange(LocalDate from, LocalDate to) {
+		if (from != null && to != null && from.isAfter(to)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tanggal awal tidak boleh melebihi tanggal akhir.");
 		}
 	}
 
